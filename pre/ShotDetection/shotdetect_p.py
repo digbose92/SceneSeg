@@ -1,7 +1,6 @@
 '''
 Parallel detect shot according to a list
 '''
-
 from __future__ import print_function
 
 import argparse
@@ -22,7 +21,6 @@ from shotdetect.video_splitter import split_video_ffmpeg
 global parallel_cnt
 global parallel_num
 parallel_cnt = 0
-
 
 def main(args, video_path, data_root):
     stats_file_folder_path = osp.join(data_root, "shot_stats")
