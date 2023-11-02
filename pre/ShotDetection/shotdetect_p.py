@@ -9,6 +9,7 @@ import os
 import os.path as osp
 import pdb
 from datetime import datetime
+import json
 
 from shotdetect.detectors.average_detector import AverageDetector
 from shotdetect.detectors.content_detector_hsv_luv import ContentDetectorHSVLUV
@@ -26,8 +27,12 @@ def main(args, video_path, data_root):
     stats_file_folder_path = osp.join(data_root, "shot_stats")
     os.makedirs(stats_file_folder_path, exist_ok=True)
 
+    timestamp_folder_path= osp.join(data_root, "shot_timestamp")
+    os.makedirs(timestamp_folder_path, exist_ok=True)
+
     video_prefix = video_path.split(".")[0].split("/")[-1]
     stats_file_path = osp.join(stats_file_folder_path, '{}.csv'.format(video_prefix))
+    timestamp_file_path = osp.join(timestamp_folder_path, '{}.json'.format(video_prefix))
     # print(video_path)
     video_manager = VideoManager([video_path])
     stats_manager = StatsManager()
@@ -75,6 +80,21 @@ def main(args, video_path, data_root):
 
         # Obtain list of detected shots.
         shot_list = shot_manager.get_shot_list(base_timecode)
+
+        shot_dict_list=dict()
+
+        for i,s in enumerate(shot_list):
+
+            sample_dict={'start_frame':s[0].frame_num,
+                        'end_frame':s[1].frame_num,
+                        'start_time':s[0].get_seconds(),
+                        'end_time':s[1].get_seconds()}
+            
+            shot_dict_list['shot_{}'.format(i)]=sample_dict
+
+        with open(timestamp_file_path,'w') as f:
+            json.dump(shot_dict_list,f,indent=4)
+
         # Each shot is a tuple of (start, end) FrameTimecodes.
         # Save keyf img for each shot
         if args.save_keyf:
