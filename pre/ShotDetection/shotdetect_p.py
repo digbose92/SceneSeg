@@ -113,9 +113,9 @@ def call_back(rst):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Parallel ShotDetect")
     parser.add_argument('--num_workers', type=int, default=2, help='number of processors.')
-    parser.add_argument('--source_path', type=str,
-                        default=osp.join("../../data/video"),
-                        help="path to the videos to be processed, please use absolute path")
+    # parser.add_argument('--source_path', type=str,
+    #                     default=osp.join("../../data/video"),
+    #                     help="path to the videos to be processed, please use absolute path")
     parser.add_argument('--list_file', type=str, 
                         default="../../data/meta.txt",
                         help='The list of videos to be processed,\
@@ -141,8 +141,8 @@ if __name__ == '__main__':
 
     parallel_num = len(video_list)
     pool = multiprocessing.Pool(processes=args.num_workers)
-    for video_id in video_list:
-        video_path = osp.abspath(osp.join(args.source_path, f"{video_id}.mp4"))
+    for video_path in video_list:
+        #video_path = osp.abspath(osp.join(args.source_path, f"{video_id}.mp4"))
         # uncommnet the following line and turn to non-parallel mode if wish to debug
         # main(args, video_path, args.save_data_root_path) 
         pool.apply_async(main, args=(args, video_path, args.save_data_root_path), callback=call_back)
